@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pin : MonoBehaviour {
 
-    public float standingThreshold;
+    public float standingThreshold = 3.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -13,16 +13,22 @@ public class Pin : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        print(name + IsStanding());
 	}
 
     public bool IsStanding ()
     {
-        if (transform.rotation.eulerAngles.y != 0)
+        Vector3 eulerRotation = transform.rotation.eulerAngles;
+        // print(name + eulerRotation);
+
+        float xTilt = ((eulerRotation.x + standingThreshold) % 360.0f) / 2.0f;
+        float zTilt = ((eulerRotation.z + standingThreshold) % 360.0f) / 2.0f;
+
+        if (xTilt < standingThreshold && zTilt < standingThreshold)
         {
             return true;
         }
 
-        return true;
+        return false;
     }
 }
