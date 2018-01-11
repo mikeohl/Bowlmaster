@@ -8,13 +8,14 @@ public class Ball : MonoBehaviour {
 
     private Rigidbody rigidBody;
     private AudioSource audioSource;
-
+    private Vector3 startPos;
     private bool inPlay;
     
 	// Use this for initialization
 	void Start () {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
+        startPos = transform.position;
 
         rigidBody.useGravity = false;
         inPlay = false;
@@ -49,6 +50,16 @@ public class Ball : MonoBehaviour {
         return false;
     }
 
+    public void Reset ()
+    {
+        Debug.Log("Resetting Ball");
+        transform.position = startPos;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+        rigidBody.useGravity = false;
+        inPlay = false;
+    }
+
     //public void KeepBallOnLane ()
     //{
     //    if (transform.position.x <= -52.0f)
@@ -56,9 +67,13 @@ public class Ball : MonoBehaviour {
     //        transform.position.x = 5.0f;
     //    }
     //}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+    // Update is called once per frame
+    void Update () {
+        //if (rigidBody.velocity.z < launchVelocity.z)
+        //{
+        //    rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0.0f, launchVelocity.z);
+        //    print(rigidBody.velocity);
+        //}
 	}
 }
