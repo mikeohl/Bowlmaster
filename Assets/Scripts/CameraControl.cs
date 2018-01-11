@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraControl : MonoBehaviour {
 
     public Ball ball;
+    public float cameraStopPosition = 1700;
 
     private Vector3 offset;
 
@@ -17,7 +18,7 @@ public class CameraControl : MonoBehaviour {
 	void Update () {
 
         // Move the Camera with the ball until it gets to a certain point before the pins
-        if (transform.position.z < 1700)
+        if (ball.transform.position.z < cameraStopPosition)
         {
             transform.position = ball.transform.position - offset;
         }
