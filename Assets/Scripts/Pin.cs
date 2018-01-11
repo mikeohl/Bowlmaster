@@ -6,9 +6,12 @@ public class Pin : MonoBehaviour {
 
     public float standingThreshold = 3.0f;
 
-	// Use this for initialization
-	void Start () {
-		
+    private Rigidbody rigidBody;
+
+    // Use this for initialization
+    void Start () {
+        GetRigidBody();
+        Debug.Assert(rigidBody);
 	}
 	
 	// Update is called once per frame
@@ -30,5 +33,38 @@ public class Pin : MonoBehaviour {
         }
 
         return false;
+    }
+
+    public void Stabilize ()
+    {
+        if (!rigidBody)
+        {
+            GetRigidBody();
+        }
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+    }
+
+    public void EnableGravity ()
+    {
+        if (!rigidBody)
+        {
+            GetRigidBody();
+        }
+        rigidBody.useGravity = true;
+    }
+
+    public void DisableGravity ()
+    {
+        if (!rigidBody)
+        {
+            GetRigidBody();
+        }
+        rigidBody.useGravity = false;
+    }
+
+    private void GetRigidBody ()
+    {
+        rigidBody = GetComponentInChildren<Rigidbody>();
     }
 }
