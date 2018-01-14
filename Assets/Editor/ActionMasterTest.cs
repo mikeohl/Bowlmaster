@@ -129,4 +129,24 @@ public class ActionMasterTest {
         actionMaster.Bowl(1);
         Assert.AreEqual(endGame, actionMaster.Bowl(9));
     }
+
+    [Test]
+    public void T12_0and10Spareand1to9NextFrameReturnsTidy()
+    {
+        actionMaster.Bowl(0);
+        actionMaster.Bowl(10);
+        Assert.AreEqual(tidy, actionMaster.Bowl(9));
+    }
+
+    [Test]
+    public void T13_LastFrameAllStrikesReturnsEndGame()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            actionMaster.Bowl(10);
+        }
+        actionMaster.Bowl(10);
+        actionMaster.Bowl(10);
+        Assert.AreEqual(endGame, actionMaster.Bowl(10));
+    }
 }
