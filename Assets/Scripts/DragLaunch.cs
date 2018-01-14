@@ -29,17 +29,23 @@ public class DragLaunch : MonoBehaviour {
     // Launch the ball
     public void DragEnd ()
     {
-        endTime = Time.time;
-        endPosition = Input.mousePosition;
+        if (!ball.BallInPlay())
+        {
+            endTime = Time.time;
+            endPosition = Input.mousePosition;
 
-        float dragDuration = startTime - endTime;
-        Vector3 launchVelocity = new Vector3();
-        launchVelocity.x = (endPosition.x - startPosition.x) / dragDuration;
-        launchVelocity.z = (endPosition.y - startPosition.y) / dragDuration * 2.5f;
+            float dragDuration = startTime - endTime;
+            Vector3 launchVelocity = new Vector3();
+            launchVelocity.x = (endPosition.x - startPosition.x) / dragDuration / 4.0f;
+            launchVelocity.z = (endPosition.y - startPosition.y) / dragDuration * 2.5f;
 
-        ball.Launch(launchVelocity);
+            launchVelocity.z = Mathf.Clamp(launchVelocity.z, 1000.0f, 2000.0f);
+            Debug.Log(launchVelocity.z);
+            ball.Launch(launchVelocity);
+        }
     }
 
+    // TODO: Needs to have ball local coordinates reset for this to work consistently
     public void MoveStart (float xNudge)
     {
         if (!ball.BallInPlay() && ball.BallInLane())
