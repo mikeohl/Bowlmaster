@@ -54,6 +54,7 @@ public class Ball : MonoBehaviour {
     {
         Debug.Log("Resetting Ball");
         transform.position = startPos;
+        transform.rotation = Quaternion.identity;
         rigidBody.velocity = Vector3.zero;
         rigidBody.angularVelocity = Vector3.zero;
         rigidBody.useGravity = false;
