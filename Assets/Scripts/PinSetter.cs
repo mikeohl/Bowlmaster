@@ -6,31 +6,33 @@ using UnityEngine.UI;
 public class PinSetter : MonoBehaviour {
 
     // public Pin [] pins;
-    public Text standingDisplay;
-    public int standingCount = -1;
-    public float resetTime = 4.0f;
-    public float pinRaiseHeight = 40.0f;
     public GameObject pins;
+    public Text standingDisplay;
+    public float resetTime      = 4.0f;
+    public float pinRaiseHeight = 40.0f;
 
     private Ball ball;
-    private float standingCountUpdateTime;
-    private bool ballEnteredBox = false;
-    private float pinsPos;
+    private Animator animator;
+    private ActionMaster actionMaster;
 
-	// Use this for initialization
-	void Start () {
+    private int lastSettledCount = 10;
+    private int standingCount    = -1;
+    private float standingCountUpdateTime;
+    private bool ballOutOfPlay = false;
+
+    // Use this for initialization
+    void Start () {
         ball = GameObject.FindObjectOfType<Ball>();
+        animator = GameObject.FindObjectOfType<Animator>();
+        actionMaster = new ActionMaster();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (ballEnteredBox)
+        if (ballOutOfPlay)
         {
-            UpdateStandingCount();
-            if (Time.time - standingCountUpdateTime >= resetTime)
-            {
-                ResetBall();
-            }
+            standingDisplay.color = Color.red;
+            Bowl();
         }
 	}
 
@@ -51,6 +53,8 @@ public class PinSetter : MonoBehaviour {
         return standingPins;
     }
 
+    // Count fallen pins
+
     // Update the standing count and last updated time if standingCount has changed
     private void UpdateStandingCount ()
     {
@@ -68,9 +72,35 @@ public class PinSetter : MonoBehaviour {
     private void ResetBall ()
     {
         ball.Reset();
-        standingCount = -1;
-        ballEnteredBox = false;
+        ballOutOfPlay = false;
         standingDisplay.color = Color.black;
+    }
+
+    private void Bowl ()
+    {
+        UpdateStandingCount();
+        if (Time.time - standingCountUpdateTime >= resetTime)
+        {
+            // Update Bowl Score
+            ActionMaster.Action action = actionMaster.Bowl(lastSettledCount - standingCount);
+            Debug.Log(action);
+            switch (action)
+            {
+                case ActionMaster.Action.Tidy:
+                    animator.SetTrigger("tidyTrigger");
+                    break;
+
+                case ActionMaster.Action.EndGame:
+                case ActionMaster.Action.EndTurn:
+                case ActionMaster.Action.Reset:
+                    animator.SetTrigger("resetTrigger");
+                    break;
+            }
+            lastSettledCount = standingCount;
+            standingCount = -1;
+            // Reset Ball
+            ResetBall();
+        }
     }
 
     // Raise Pins to avoid swiper
@@ -103,19 +133,8 @@ public class PinSetter : MonoBehaviour {
     {
         Instantiate(pins);
         RaisePins();
-    }
-
-
-    public void OnTriggerEnter(Collider collider)
-    {
-        GameObject triggeredObject = collider.gameObject;
-
-        // Update color if object collided is ball
-        if (triggeredObject.GetComponent<Ball>())
-        {
-            ballEnteredBox = true;
-            standingDisplay.color = Color.red;
-        }
+        lastSettledCount = 10;
+        standingDisplay.text = lastSettledCount.ToString();
     }
 
     // Eliminate Pins that leave the Pin Setter box
@@ -138,5 +157,10 @@ public class PinSetter : MonoBehaviour {
         {
             //Destroy(collider.gameObject);
         }
+    }
+
+    public void SetBallOutOfPlay(bool isOutOfPlay)
+    {
+        ballOutOfPlay = isOutOfPlay;
     }
 }
