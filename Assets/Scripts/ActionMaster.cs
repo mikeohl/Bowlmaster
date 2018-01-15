@@ -5,24 +5,25 @@ using UnityEngine;
 public class ActionMaster {
 
     public enum Action {Tidy, Reset, EndTurn, EndGame};
-    public enum Frame {Open, Spare, Strike};
 
-    // private int[] bowls = new int[21];
+    // private Frame[] frames = new Frame[10];
     private int bowl = 0;
     private bool firstRoll = true;
     private int firstScore = 0;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public static Action NextAction (List<int> pinsKnockedDown)
+    {
+        ActionMaster actionMaster = new ActionMaster();
+        Action nextAction = Action.EndTurn;
+        foreach (int pins in pinsKnockedDown)
+        {
+            nextAction = actionMaster.Bowl(pins);
+        }
 
-    public Action Bowl (int pins)
+        return nextAction;
+    }
+
+    private Action Bowl (int pins)
     {
         // Handle invalid pin number
         if (pins < 0 || pins > 10)
@@ -30,7 +31,7 @@ public class ActionMaster {
             throw new UnityException("Invalid pin count. Pins must be 0 - 10");
         }
 
-        // For Frame 10
+        // Frame 10
         if (bowl > 17)
         {
             // If on third roll, end game
@@ -65,20 +66,22 @@ public class ActionMaster {
             }
         }
 
-        // For Bowling Frames 1 - 9
-        // If the player bowls a strike, move the player bowl index up 2 and end turn
-        if (pins == 10)
-        {
-            bowl += 2; // won't work for final frame
-            return Action.EndTurn;
-        }
-
-        // If the first roll is not a strike, increment the bowl index 1 and tidy
+        // First Roll of Frames 1 - 9
         if (bowl % 2 == 0)
         {
-            bowl += 1;
-            return Action.Tidy;
-        } else // if is the second roll, increment the bowl index 1 and end turn
+            // The player bowls a strike, move the player bowl index up 2 and end turn
+            if (pins == 10)
+            {
+                bowl += 2;
+                return Action.EndTurn;
+            }
+            else // The player doesn't bowl a strike, increment the bowl index 1 and tidy
+            {
+                bowl += 1;
+                return Action.Tidy;
+            }
+        }
+        else // Second roll, increment the bowl index 1 and end turn
         {
             bowl += 1;
             return Action.EndTurn;
