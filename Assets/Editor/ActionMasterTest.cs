@@ -10,13 +10,12 @@ public class ActionMasterTest {
     private ActionMaster.Action tidy = ActionMaster.Action.Tidy;
     private ActionMaster.Action reset = ActionMaster.Action.Reset;
     private ActionMaster.Action endGame = ActionMaster.Action.EndGame;
-
-    private ActionMaster actionMaster;
+    private List<int> pinsKnockedDown;
 
     [SetUp]
     public void Setup ()
     {
-        actionMaster = new ActionMaster();
+        pinsKnockedDown = new List<int>();
     }
     
 
@@ -29,50 +28,54 @@ public class ActionMasterTest {
     [Test]
     public void T01_FirstStrikeReturnsEndTurn()
     {
-        Assert.AreEqual(endTurn, actionMaster.Bowl(10));
+        pinsKnockedDown.Add(10);
+        Assert.AreEqual(endTurn, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T02_Bowl8ReturnsTidy ()
     {
-        Assert.AreEqual(tidy, actionMaster.Bowl(8));
+        pinsKnockedDown.Add(8);
+        Assert.AreEqual(tidy, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T03_2ndBowlReturnsEndTurn ()
     {
-        actionMaster.Bowl(1);
-        Assert.AreEqual(endTurn, actionMaster.Bowl(1));
+        pinsKnockedDown.Add(1);
+        pinsKnockedDown.Add(1);
+        Assert.AreEqual(endTurn, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T04_Strike1InLastFrame ()
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        Assert.AreEqual(reset, actionMaster.Bowl(10));
+
+        Assert.AreEqual(reset, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T05_Strike2InLastFrame()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        Assert.AreEqual(reset, actionMaster.Bowl(10));
+        Assert.AreEqual(reset, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T06_Strike3InLastFrame()
     {
-        for (int i = 0; i < 11; i++)
+        for (int i = 0; i < 12; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        Assert.AreEqual(endGame, actionMaster.Bowl(10));
+        Assert.AreEqual(endGame, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
@@ -80,9 +83,10 @@ public class ActionMasterTest {
     {
         for (int i = 0; i < 9; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        Assert.AreEqual(tidy, actionMaster.Bowl(1));
+        pinsKnockedDown.Add(1);
+        Assert.AreEqual(tidy, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
@@ -90,10 +94,11 @@ public class ActionMasterTest {
     {
         for (int i = 0; i < 9; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        actionMaster.Bowl(1);
-        Assert.AreEqual(reset, actionMaster.Bowl(9));
+        pinsKnockedDown.Add(1);
+        pinsKnockedDown.Add(9);
+        Assert.AreEqual(reset, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
@@ -101,52 +106,42 @@ public class ActionMasterTest {
     {
         for (int i = 0; i < 9; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        actionMaster.Bowl(1);
-        Assert.AreEqual(endGame, actionMaster.Bowl(1));
+        pinsKnockedDown.Add(1);
+        pinsKnockedDown.Add(1);
+        Assert.AreEqual(endGame, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T10_Strike1Open2InLastFrame()
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        actionMaster.Bowl(10);
-        Assert.AreEqual(tidy, actionMaster.Bowl(9));
+        pinsKnockedDown.Add(9);
+        Assert.AreEqual(tidy, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T11_Strike1Open2Spare3InLastFrame()
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
-            actionMaster.Bowl(10);
+            pinsKnockedDown.Add(10);
         }
-        actionMaster.Bowl(10);
-        actionMaster.Bowl(1);
-        Assert.AreEqual(endGame, actionMaster.Bowl(9));
+        pinsKnockedDown.Add(1);
+        pinsKnockedDown.Add(9);
+        Assert.AreEqual(endGame, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
     public void T12_0and10Spareand1to9NextFrameReturnsTidy()
     {
-        actionMaster.Bowl(0);
-        actionMaster.Bowl(10);
-        Assert.AreEqual(tidy, actionMaster.Bowl(9));
-    }
-
-    [Test]
-    public void T13_LastFrameAllStrikesReturnsEndGame()
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            actionMaster.Bowl(10);
-        }
-        actionMaster.Bowl(10);
-        actionMaster.Bowl(10);
-        Assert.AreEqual(endGame, actionMaster.Bowl(10));
+        pinsKnockedDown.Add(0);
+        pinsKnockedDown.Add(10);
+        pinsKnockedDown.Add(9);
+        Assert.AreEqual(tidy, ActionMaster.NextAction(pinsKnockedDown));
     }
 }
