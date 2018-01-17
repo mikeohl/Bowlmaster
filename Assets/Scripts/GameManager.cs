@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
     private Ball ball;
     private PinSetter pinSetter;
     private PinCounter pinCounter;
+    private ScoreDisplay scoreDisplay;
     private bool ballOutOfPlay = false;
 
     private int standingCount = -1;
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour {
         ball = GameObject.FindObjectOfType<Ball>();
         pinSetter = GameObject.FindObjectOfType<PinSetter>();
         pinCounter = GameObject.FindObjectOfType<PinCounter>();
+        scoreDisplay = GameObject.FindObjectOfType<ScoreDisplay>();
     }
 
     // Update is called once per frame
@@ -69,6 +71,7 @@ public class GameManager : MonoBehaviour {
 
     private void Bowl (int pinsKnockedDown)
     {
+
         bowls.Add(pinsKnockedDown);
 
         ActionMaster.Action nextAction = ActionMaster.NextAction(bowls);
@@ -76,10 +79,19 @@ public class GameManager : MonoBehaviour {
 
         lastSettledCount = standingCount;
         standingCount = -1;
+
+        try
+        {
+            scoreDisplay.FillRollCard(bowls);
+        } catch
+        {
+            Debug.Log("FillRollCard Failed!");
+        }
+        
         // Reset Ball
         ResetBall();
 
-        if (nextAction == ActionMaster.Action.Reset)
+        if (nextAction != ActionMaster.Action.Tidy)
         {
             lastSettledCount = 10;
         }
