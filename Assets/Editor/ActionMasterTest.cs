@@ -13,11 +13,11 @@ public class ActionMasterTest {
     private List<int> pinsKnockedDown;
 
     [SetUp]
-    public void Setup ()
+    public void Setup()
     {
         pinsKnockedDown = new List<int>();
     }
-    
+
 
     [Test]
     public void T00_PassingTest()
@@ -33,14 +33,14 @@ public class ActionMasterTest {
     }
 
     [Test]
-    public void T02_Bowl8ReturnsTidy ()
+    public void T02_Bowl8ReturnsTidy()
     {
         pinsKnockedDown.Add(8);
         Assert.AreEqual(tidy, ActionMaster.NextAction(pinsKnockedDown));
     }
 
     [Test]
-    public void T03_2ndBowlReturnsEndTurn ()
+    public void T03_2ndBowlReturnsEndTurn()
     {
         pinsKnockedDown.Add(1);
         pinsKnockedDown.Add(1);
@@ -48,7 +48,7 @@ public class ActionMasterTest {
     }
 
     [Test]
-    public void T04_Strike1InLastFrame ()
+    public void T04_Strike1InLastFrame()
     {
         for (int i = 0; i < 10; i++)
         {
