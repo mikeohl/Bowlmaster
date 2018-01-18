@@ -36,29 +36,24 @@ public class DragLaunch : MonoBehaviour {
 
             float dragDuration = startTime - endTime;
             Vector3 launchVelocity = new Vector3();
-            launchVelocity.x = (endPosition.x - startPosition.x) / dragDuration / 4.0f;
-            launchVelocity.z = (endPosition.y - startPosition.y) / dragDuration * 2.5f;
+            launchVelocity.x = (endPosition.x - startPosition.x) / dragDuration / 5.0f;
+            launchVelocity.z = (endPosition.y - startPosition.y) / dragDuration * 2.0f;
 
-            launchVelocity.z = Mathf.Clamp(launchVelocity.z, 1000.0f, 2000.0f);
+            launchVelocity.z = Mathf.Clamp(launchVelocity.z, 300.0f, 1500.0f);
             Debug.Log(launchVelocity.z);
             ball.Launch(launchVelocity);
         }
     }
 
-    // TODO: Needs to have ball local coordinates reset for this to work consistently
     public void MoveStart (float xNudge)
     {
         if (!ball.BallInPlay() && ball.BallInLane())
         {
             ball.transform.Translate(new Vector3(xNudge, 0, 0));
+            if (!ball.BallInLane())
+            {
+                ball.transform.Translate(new Vector3(-xNudge, 0, 0));
+            }
         }
-        //if (ball.transform.position.x > 52.0f)
-        //{
-        //    ball.transform.position.x = 5;
-        //}
-        
-        Mathf.Clamp(ball.transform.position.x, -52.0f, 52.0f);
-        Debug.Log("Ball moved " + xNudge);
-        // ball.transform.position.x += xNudge;
     }
 }
