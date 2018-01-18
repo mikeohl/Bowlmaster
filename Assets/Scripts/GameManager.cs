@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
             {
                 Bowl(lastSettledCount - standingCount);
             }
+            // TODO: Should stop audio at some point
         }
     }
 
@@ -73,7 +74,6 @@ public class GameManager : MonoBehaviour {
     {
 
         bowls.Add(pinsKnockedDown);
-
         ActionMaster.Action nextAction = ActionMaster.NextAction(bowls);
         pinSetter.SetPins(nextAction);
 
@@ -87,13 +87,17 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("FillRollCard Failed!");
         }
-        
+
         // Reset Ball
         ResetBall();
 
         if (nextAction != ActionMaster.Action.Tidy)
         {
             lastSettledCount = 10;
+        }
+        if (nextAction == ActionMaster.Action.EndGame)
+        {
+            bowls = new List<int>();
         }
     }
 }
