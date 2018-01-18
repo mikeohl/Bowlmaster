@@ -19,9 +19,18 @@ public class Ball : MonoBehaviour {
 
         rigidBody.useGravity = false;
         inPlay = false;
-
-        // Launch(launchVelocity);
 	}
+
+    private void Update()
+    {
+        if (inPlay)
+        {
+            if (rigidBody.velocity.z < 300f)
+            {
+                rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0.0f, 300.0f);
+            }
+        }
+    }
 
     public void Launch (Vector3 velocity)
     {
@@ -52,7 +61,6 @@ public class Ball : MonoBehaviour {
 
     public void Reset ()
     {
-        Debug.Log("Resetting Ball");
         transform.position = startPos;
         transform.rotation = Quaternion.identity;
         rigidBody.velocity = Vector3.zero;
@@ -60,21 +68,4 @@ public class Ball : MonoBehaviour {
         rigidBody.useGravity = false;
         inPlay = false;
     }
-
-    //public void KeepBallOnLane ()
-    //{
-    //    if (transform.position.x <= -52.0f)
-    //    {
-    //        transform.position.x = 5.0f;
-    //    }
-    //}
-
-    // Update is called once per frame
-    void Update () {
-        //if (rigidBody.velocity.z < launchVelocity.z)
-        //{
-        //    rigidBody.velocity = new Vector3(rigidBody.velocity.x, 0.0f, launchVelocity.z);
-        //    print(rigidBody.velocity);
-        //}
-	}
 }
