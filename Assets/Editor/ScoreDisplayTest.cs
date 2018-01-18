@@ -18,8 +18,10 @@ public class ScoreDisplayTest {
     {
         int[] rolls = { 1 };
         string rollsString = "1";
-        //Assert.AreEqual(rollsString, ScoreDisplay.FormatRolls(rolls.ToList()));
+        Assert.AreEqual(rollsString, ScoreDisplay.FormatRolls(rolls.ToList()));
     }
+
+
 
 
 }
