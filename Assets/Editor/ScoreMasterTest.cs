@@ -239,4 +239,20 @@ public class ScoreMasterTest {
         int[] totalS = { 30, 60, 89, 108, 117, 147, 177, 207, 236, 256 };
         Assert.AreEqual(totalS.ToList(), ScoreMaster.ScoreCumulative(rolls.ToList()));
     }
+
+    [Test]
+    public void T22Test0then10Spare()
+    {
+        int[] rolls = { 0, 10, 0, 1 }; //, 0, 10, 4 };//, 3, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 2, 3 };
+        int[] frames = { 10, 1 };//10, 14 }; //, 7, 6, 2, 2, 2, 2, 2, 15 };
+        Assert.AreEqual(frames.ToList(), ScoreMaster.ScoreFrames(rolls.ToList()));
+    }
+
+    [Test]
+    public void T23SingleBowl4()
+    {
+        int[] rolls = { 4 }; 
+        int[] frames = { };
+        Assert.AreEqual(frames.ToList(), ScoreMaster.ScoreFrames(rolls.ToList()));
+    }
 }
