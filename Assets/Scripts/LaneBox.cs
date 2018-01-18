@@ -5,7 +5,6 @@ using UnityEngine;
 public class LaneBox : MonoBehaviour {
 
     private GameManager gameManager;
-    private bool ballOutOfPlay = false;
 
 	// Use this for initialization
 	void Start () {
