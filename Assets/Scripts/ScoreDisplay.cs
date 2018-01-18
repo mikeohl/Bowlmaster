@@ -18,58 +18,47 @@ public class ScoreDisplay : MonoBehaviour {
         total.text = frameScores[i - 1].ToString();
     }
 
-    public void FillRolls(List<int> rolls)
+    public static string FormatRolls(List<int> rolls)
     {
-        //string scoresString = FillRollCard(rolls);
-        //for (int i = 0; i < scoresString.Length; i++)
-        //{
-        //    scores[i].text = scoresString[i].ToString();
-        //}
-    }
-
-    public void FillRollCard(List<int> rolls)
-    {
-        int i = 0;
+        string scoresString = "";
         Queue<int> memory = new Queue<int>();
 
         foreach (int roll in rolls)
         {
-            if (memory.Count == 0 && roll == 10)
+            if (memory.Count == 0)
             {
-                if (i < 18) i++;
-                scores[i].text = "X";
-            }
-            else if (memory.Count == 0)
-            {
-                if (roll == 0)
+                if (roll == 10)
                 {
-                    scores[i].text = "-";
+                    scoresString += "X";
+                    if (scoresString.Length < 19) { scoresString += " "; }
                 }
                 else
                 {
-                    scores[i].text = roll.ToString();
+                    memory.Enqueue(roll);
+                    if (roll == 0) { scoresString += "-"; }
+                    else { scoresString += roll.ToString(); }
                 }
-                memory.Enqueue(roll);
             }
             else
             {
                 int total = memory.Dequeue() + roll;
-                if (total == 10)
-                {
-                    scores[i].text = "/";
-                }
+                if (total == 10) { scoresString += "/"; }
                 else
                 {
-                    if (roll == 0)
-                    {
-                        scores[i].text = "-";
-                    } else
-                    {
-                        scores[i].text = roll.ToString();
-                    }
+                    if (roll == 0) { scoresString += "-"; }
+                    else { scoresString += roll.ToString(); }
                 }
             }
-            i++;
+        }
+        return scoresString;
+    }
+
+    public void FillRollCard(List<int> rolls)
+    {
+        string scoresString = FormatRolls(rolls);
+        for (int i = 0; i < scoresString.Length; i++)
+        {
+            scores[i].text = scoresString[i].ToString();
         }
         int j = 0;
         foreach (int score in ScoreMaster.ScoreCumulative(rolls))
