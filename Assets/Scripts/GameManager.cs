@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,8 +20,7 @@ public class GameManager : MonoBehaviour {
     private List<int> bowls = new List<int>();
 
     // Use this for initialization
-    void Start()
-    {
+    void Start() {
         ball = GameObject.FindObjectOfType<Ball>();
         pinSetter = GameObject.FindObjectOfType<PinSetter>();
         pinCounter = GameObject.FindObjectOfType<PinCounter>();
@@ -30,49 +28,40 @@ public class GameManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (ballOutOfPlay)
-        {
+    void Update() {
+        if (ballOutOfPlay) {
             standingDisplay.color = Color.red;
             UpdateStandingCount();
-            if (Time.time - standingCountUpdateTime >= resetTime)
-            {
+            if (Time.time - standingCountUpdateTime >= resetTime) {
                 Bowl(lastSettledCount - standingCount);
             }
             // TODO: Should stop audio at some point
         }
     }
 
-    public void SetBallOutOfPlay(bool isOutOfPlay)
-    {
+    public void SetBallOutOfPlay(bool isOutOfPlay) {
         ballOutOfPlay = isOutOfPlay;
     }
 
     // Reset lastStandingCount, ballEnteredBox, display color
-    private void ResetBall()
-    {
+    private void ResetBall() {
         ball.Reset();
         ballOutOfPlay = false;
         standingDisplay.color = Color.black;
     }
 
     // Update the standing count and last updated time if standingCount has changed
-    private void UpdateStandingCount()
-    {
+    private void UpdateStandingCount() {
         int currentCount = pinCounter.CountStandingPins();
 
-        if (standingCount != currentCount)
-        {
+        if (standingCount != currentCount) {
             standingCount = currentCount;
             standingCountUpdateTime = Time.time;
             standingDisplay.text = currentCount.ToString();
         }
     }
 
-    private void Bowl (int pinsKnockedDown)
-    {
-
+    private void Bowl (int pinsKnockedDown) {
         bowls.Add(pinsKnockedDown);
         ActionMaster.Action nextAction = ActionMaster.NextAction(bowls);
         pinSetter.SetPins(nextAction);
@@ -80,23 +69,19 @@ public class GameManager : MonoBehaviour {
         lastSettledCount = standingCount;
         standingCount = -1;
 
-        try
-        {
+        try {
             scoreDisplay.FillRollCard(bowls);
-        } catch
-        {
+        } catch {
             Debug.Log("FillRollCard Failed!");
         }
 
         // Reset Ball
         ResetBall();
 
-        if (nextAction != ActionMaster.Action.Tidy)
-        {
+        if (nextAction != ActionMaster.Action.Tidy) {
             lastSettledCount = 10;
         }
-        if (nextAction == ActionMaster.Action.EndGame)
-        {
+        if (nextAction == ActionMaster.Action.EndGame) {
             bowls = new List<int>();
         }
     }

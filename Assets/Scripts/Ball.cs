@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ball : MonoBehaviour {
 
@@ -11,15 +9,15 @@ public class Ball : MonoBehaviour {
     private Vector3 startPos;
     private bool inPlay;
     
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
         startPos = transform.position;
 
         rigidBody.useGravity = false;
         inPlay = false;
-	}
+    }
 
     private void Update()
     {
