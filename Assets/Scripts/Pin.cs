@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* Pin contains methods to check if pin is standing (has it been knocked down?)
+ * and to stabilize the pin to zero motion once it is set. Also includes 
+ * helper gravity functions for use with pin setter animation.
+ */
+
+using UnityEngine;
 
 public class Pin : MonoBehaviour {
 
@@ -12,20 +17,21 @@ public class Pin : MonoBehaviour {
         Debug.Assert(rigidBody);
     }
 
+    // Check if pin orientation is sufficient for a standing pin
     public bool IsStanding () {
         Vector3 eulerRotation = transform.rotation.eulerAngles;
-        // print(name + eulerRotation);
 
         float xTilt = ((eulerRotation.x + standingThreshold) % 360.0f) / 2.0f;
         float zTilt = ((eulerRotation.z + standingThreshold) % 360.0f) / 2.0f;
 
         if (xTilt < standingThreshold && zTilt < standingThreshold) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
+    // Set pin attributes to stop pin from moving
     public void Stabilize () {
         if (!rigidBody) {
             GetRigidBody();
@@ -35,17 +41,15 @@ public class Pin : MonoBehaviour {
         rigidBody.angularVelocity = Vector3.zero;
     }
 
+    // For use with pin setter animation
     public void EnableGravity () {
-        if (!rigidBody) {
-            GetRigidBody();
-        }
+        if (!rigidBody) { GetRigidBody(); }
         rigidBody.useGravity = true;
     }
 
+    // For use with pin setter animation
     public void DisableGravity () {
-        if (!rigidBody) {
-            GetRigidBody();
-        }
+        if (!rigidBody) { GetRigidBody(); }
         rigidBody.useGravity = false;
     }
 
