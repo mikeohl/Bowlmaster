@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* PinSetter manages animation triggers for the lane's pin machine,
+ * raises and lowers pins, creates new set of pins and destroys pins
+ * once they exit the pinSetter collider
+ */
+
+using UnityEngine;
 
 public class PinSetter : MonoBehaviour {
 
@@ -13,8 +18,8 @@ public class PinSetter : MonoBehaviour {
         animator = GameObject.FindObjectOfType<Animator>();
     }
 
+    // Control animation triggers based on ActionMaster action
     public void SetPins (ActionMaster.Action action) {
-        // Update Bowl Score
         Debug.Log(action);
         switch (action) {
             case ActionMaster.Action.Tidy:
