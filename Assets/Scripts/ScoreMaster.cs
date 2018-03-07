@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿/* ScoreMaster contains methods to calculate the score of each frame
+ * and the cumulative score from a list of rolls as well as save the
+ * score to player prefs.
+ */
+
+using System.Collections.Generic;
 
 public static class ScoreMaster {
 
-    // Returns a list of individual frame scores
+    // Scores each frame and returns a list of individual frame scores
     public static List<int> ScoreFrames(List<int> rolls) {
         List<int> frameList = new List<int>();
         Queue<int> memory = new Queue<int>();
@@ -34,8 +39,19 @@ public static class ScoreMaster {
         foreach (int frameScore in ScoreFrames(rolls)) {
             runningTotal += frameScore;
             cumulativeScores.Add(runningTotal);
+            SaveScore(runningTotal);
         }
 
         return cumulativeScores;
     }
+
+    // Save the score Player Prefs
+    private static void SaveScore (int score) {
+        PlayerPrefsManager.SetLastScore(score);
+        int highScore = PlayerPrefsManager.GetHighScore();
+        if (score > highScore) {
+            PlayerPrefsManager.SetHighScore(score);
+        }
+    }
+
 }
