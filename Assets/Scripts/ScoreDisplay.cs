@@ -7,14 +7,8 @@ public class ScoreDisplay : MonoBehaviour {
     public Text[] scores, frames;
     public Text total;
 
-    public void FillFrames(List<int> frameScores) {
-        int i = 0;
-        for (; i < frameScores.Count; i++) {
-            frames[i].text = frameScores[i].ToString();
-        }
-        total.text = frameScores[i - 1].ToString();
-    }
-
+    // Generate a string of bowl symbols and numbers for UI score card
+    // given a list of rolls.
     public static string FormatRolls(List<int> rolls) {
         string scoresString = "";
         Queue<int> memory = new Queue<int>();
@@ -41,6 +35,7 @@ public class ScoreDisplay : MonoBehaviour {
         return scoresString;
     }
 
+    // Fill the UI Roll Card with bowl counts, symbols, and cumulative scores
     public void FillRollCard(List<int> rolls) {
         string scoresString = FormatRolls(rolls);
         for (int i = 0; i < scoresString.Length; i++) {
