@@ -1,74 +1,50 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿/* ActionMaster controls the action that takes place after a roll.
+ * Actions are listed in enum as Tidy (sweep pins), Reset (set new pins),
+ * EndTurn, and EndGame
+ */
+
+using System.Collections.Generic;
 
 public class ActionMaster {
 
-    public enum Action {Tidy, Reset, EndTurn, EndGame};
+    public enum Action {Tidy, Reset, EndTurn, EndGame, _Undefined};
 
-    private int bowl = 0;
-    private bool firstRoll = true;
-    private int firstScore = 0;
-
-    public static Action NextAction (List<int> pinsKnockedDown) {
+    // Given list of pins knocked down on each roll, determine next 
+    // action that should be taken by the actionMaster
+    public static Action NextAction (List<int> roll) {
         ActionMaster actionMaster = new ActionMaster();
-        Action nextAction = Action.EndTurn;
-        foreach (int pins in pinsKnockedDown) {
-            nextAction = actionMaster.Bowl(pins);
-        }
+        Action nextAction = Action._Undefined;
+        int bowl = 1; // count all potential rolls, roll list only contains actual rolls
+        int firstScore = 0;
+        bool firstRoll = true;
 
+        for(int i = 0; i < roll.Count; i++, bowl++) {
+
+            if (bowl > 18) { // Handle special case for Frame 10
+                if (bowl == 21) {
+                    nextAction = Action.EndGame;
+                } else if (roll[i] == 10) {              // Strikes
+                    nextAction = Action.Reset;
+                } else if (firstRoll) { 
+                    firstScore = roll[i];
+                    firstRoll = false;
+                    nextAction = Action.Tidy;
+                } else if (firstScore + roll[i] == 10) { // Spare
+                    nextAction = Action.Reset;
+                } else {                                 // Open frame
+                    nextAction = Action.EndGame;
+                }
+            } else if (bowl % 2 == 1) { // On first roll of frame 1 - 9
+                if (roll[i] == 10) {
+                    bowl++;
+                    nextAction = Action.EndTurn;
+                } else {
+                    nextAction = Action.Tidy;
+                }
+            } else { // On second roll
+                nextAction = Action.EndTurn;
+            }
+        }
         return nextAction;
-    }
-
-    private Action Bowl (int pins) {
-        // Handle invalid pin number
-        if (pins < 0 || pins > 10) {
-            throw new UnityException("Invalid pin count. Pins must be 0 - 10");
-        }
-
-        // Frame 10
-        if (bowl > 17) {
-            // If on third roll, end game
-            if (bowl == 20) {
-                bowl = 0;
-                return Action.EndGame;
-            } // If on roll 1 or 2 & strike, reset
-            else if (pins == 10) {
-                bowl += 1;
-                return Action.Reset;
-            } // If on roll 1 or 2 without a strike, tidy
-            else if (firstRoll) {
-                firstScore = pins;
-                firstRoll = false;
-                bowl += 1;
-                return Action.Tidy;
-            } // If spare on roll 2, reset
-            else if (firstScore + pins == 10) {
-                bowl += 1;
-                firstScore = 0; // reset first score
-                firstRoll = true;
-                return Action.Reset;
-            } // If open on roll 2, end game
-            else {
-                bowl = 0;
-                return Action.EndGame;
-            }
-        }
-
-        // First Roll of Frames 1 - 9
-        if (bowl % 2 == 0) {
-            // The player bowls a strike, move the player bowl index up 2 and end turn
-            if (pins == 10) {
-                bowl += 2;
-                return Action.EndTurn;
-            } // The player doesn't bowl a strike, increment the bowl index 1 and tidy
-            else {
-                bowl += 1;
-                return Action.Tidy;
-            }
-        } // Second roll, increment the bowl index 1 and end turn
-        else {
-            bowl += 1;
-            return Action.EndTurn;
-        }
     }
 }
