@@ -15,10 +15,10 @@ public class OptionsController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         ballColor = PlayerPrefsManager.GetBallColor();
-        
     }
     
     // Save options from the option menu to persistent storage
+    // TODO: Implement ball color slider and ball color in editor
     public void SaveAndExit () {
         PlayerPrefsManager.SetBallColor (ballColor);
         levelManager.LoadLevel ("01a Start Menu");
